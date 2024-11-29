@@ -7,15 +7,12 @@ $mysql_user = "root";
 $mysql_password = "@Bcde12345";
 $mysql_database = "wings";
 
-// Create a new MySQLi connection
-$bd = new mysqli($mysql_hostname, $mysql_user, $mysql_password, $mysql_database);
-
-// Check for a connection error
-if ($bd->connect_error) {
-    die("Connection failed: " . $bd->connect_error);
+try {
+    // Create a new PDO connection
+    $pdo = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_database;charset=utf8", $mysql_user, $mysql_password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // Enable exceptions for errors
+    echo "Connected successfully to the database '$mysql_database'";
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
 }
-
-// If the connection is successful, select the database (mysqli automatically does this on connection)
-echo "Connected successfully to the database '$mysql_database'";
-
 ?>
