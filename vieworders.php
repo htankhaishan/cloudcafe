@@ -51,17 +51,37 @@ require_once('auth.php');
 <body onload="showCurrentTime()">
     <div id="container">
         <div id="header_section">
-            <div style="float:right; margin-right:30px;">
-                <?php
-                require_once('connection.php');
-                $id = $_SESSION['SESS_MEMBER_ID'];
-                $query = $pdo->prepare("SELECT name, surname FROM members WHERE id = :id");
-                $query->execute(['id' => $id]);
-                $member = $query->fetch();
-                echo htmlspecialchars($member['name'] . ' ' . $member['surname']);
-                ?>
-                &nbsp;<a href="logout.php" id="logout-button">Logout</a>
-            </div>
+          <style>
+              table {
+                  width: 100%;
+                  border-collapse: collapse;
+              }
+              table th, table td {
+                  color: black; /* Make text black */
+                  padding: 8px;
+                  text-align: left;
+                  border: 1px solid #ddd;
+              }
+              table th {
+                  background-color: #f4f4f4; /* Optional: Add background to header */
+              }
+          </style>
+          <div style="float:right; margin-right:30px;">
+              <?php
+              require_once('connection.php');
+              $id = $_SESSION['SESS_MEMBER_ID'];
+              $query = $pdo->prepare("SELECT name, surname FROM members WHERE id = :id");
+              $query->execute(['id' => $id]);
+              $member = $query->fetch();
+
+              if ($member) {
+                  echo htmlspecialchars($member['name'] . ' ' . $member['surname']);
+              } else {
+                  echo "User not found";
+              }
+              ?>
+              &nbsp;<a href="logout.php" id="logout-button">Logout</a>
+          </div>
         </div>
 
         <div id="menu_bg">
@@ -123,18 +143,23 @@ require_once('auth.php');
                             ?>
                         </tbody>
                         <tfoot>
-                            <tr>
-                                <td colspan="3">Grand Total:</td>
-                                <td colspan="2">
-                                    <?php
-                                    $query = $pdo->prepare("SELECT SUM(total) as grandTotal FROM orderditems WHERE transactioncode = :transactioncode");
-                                    $query->execute(['transactioncode' => $_SESSION['SESS_FIRST_NAME']]);
-                                    $total = $query->fetchColumn();
-                                    echo "<input type='text' readonly value='" . htmlspecialchars($total) . "' />";
-                                    ?>
-                                </td>
-                            </tr>
-                        </tfoot>
+                          <tr>
+                              <td colspan="3">Grand Total:</td>
+                              <td colspan="2">
+                                  <?php
+                                  $query = $pdo->prepare("SELECT SUM(total) as grandTotal FROM orderditems WHERE transactioncode = :transactioncode");
+                                  $query->execute(['transactioncode' => $_SESSION['SESS_FIRST_NAME']]);
+                                  $total = $query->fetchColumn();
+
+                                  if ($total !== false) {
+                                      echo "<input type='text' readonly value='" . htmlspecialchars($total) . "' />";
+                                  } else {
+                                      echo "<input type='text' readonly value='0' />";
+                                  }
+                                  ?>
+                              </td>
+                          </tr>
+                      </tfoot>s
                     </table>
                     <div>
                         <label>Student Num: <input type="text" name="num" /></label>
