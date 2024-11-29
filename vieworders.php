@@ -67,23 +67,26 @@ require_once('auth.php');
               }
           </style>
           <div style="float:right; margin-right:30px;">
-              <?php
-              require_once('connection.php');
-              $id = $_SESSION['SESS_MEMBER_ID'];
-              $query = $pdo->prepare("SELECT name, surname FROM members WHERE id = :id");
-              $query->execute(['id' => $id]);
-              $member = $query->fetch();
+            <?php
+            require_once('connection.php');
 
-              if ($member) {
-                  echo htmlspecialchars($member['name'] . ' ' . $member['surname']);
-              } else {
-                  echo "User not found";
-              }
-              ?>
-              &nbsp;<a href="logout.php" id="logout-button">Logout</a>
-          </div>
+            if (isset($_SESSION['SESS_MEMBER_ID'])) {
+                $id = $_SESSION['SESS_MEMBER_ID'];
+                $query = $pdo->prepare("SELECT name, surname FROM members WHERE id = :id");
+                $query->execute(['id' => $id]);
+                $member = $query->fetch();
+
+                if ($member) {
+                    echo htmlspecialchars($member['name'] . ' ' . $member['surname']);
+                } else {
+                    echo "<span style='color:red;'>User not found.</span>";
+                }
+            } else {
+                echo "<span style='color:red;'>Session ID not set.</span>";
+            }
+            ?>
+            &nbsp;<a href="logout.php" id="logout-button">Logout</a>
         </div>
-
         <div id="menu_bg">
             <div id="menu">
                 <ul>
