@@ -4,7 +4,7 @@ ini_set('display_errors', 1);  // Show errors for debugging
 
 $mysql_hostname = "127.0.0.1";
 $mysql_user = "root";
-$mysql_password = "";
+$mysql_password = "@Bcde12345";
 $mysql_database = "wings";
 
 // Create a new MySQLi connection
