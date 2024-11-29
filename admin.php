@@ -1,33 +1,28 @@
 <?php
 session_start();
 
-include("connection.php");
+include("connection.php"); // Ensure $bd is defined as the mysqli connection
+
+// Fetch input safely using prepared statements
 $id = $_POST['email'];
 $password = $_POST['password'];
-$id = mysql_real_escape_string($id);
-$password = mysql_real_escape_string($password);
 
-$sql = "select * from users where email = '$id' and password = '$password'";
-$result = mysql_query($sql);
-$count = mysql_num_rows($result);
-if($count ==1){
-// session_regenerate_id();
-			session_regenerate_id();
-			$member = mysql_fetch_assoc($result);
-			$_SESSION['SESS_MEMBER_ID'] = $member['id'];
-			$_SESSION['SESS_FIRST_NAME'] = $member['username'];
-			session_write_close();
-header("location:home_admin.php");
+// Prepare the SQL statement to prevent SQL injection
+$stmt = $bd->prepare("SELECT * FROM users WHERE email = ? AND password = ?");
+$stmt->bind_param("ss", $id, $password);
+$stmt->execute();
+$result = $stmt->get_result();
 
-}
-else{
-echo "<h4 style='color:red;'>";
-			
-			
-			echo "Please enter your correct login details!!!";
-			echo "</h4>";
-die(mysql_error());
-			
+// Check if exactly one user exists with the provided credentials
+if ($result->num_rows === 1) {
+    session_regenerate_id();
+    $member = $result->fetch_assoc();
+    $_SESSION['SESS_MEMBER_ID'] = $member['id'];
+    $_SESSION['SESS_FIRST_NAME'] = $member['username'];
+    session_write_close();
+    header("location:home_admin.php");
+    exit();
+} else {
+    echo "<h4 style='color:red;'>Please enter your correct login details!!!</h4>";
 }
 ?>
-
