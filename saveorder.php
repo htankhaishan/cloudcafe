@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include("connection.php"); // Ensure $pdo is defined as the PDO connection
+include("connection.php"); // Ensure $db is defined as the PDO connection
 
 // Fetch input safely using prepared statements
 $email = $_POST['email'];
@@ -9,7 +9,7 @@ $password = $_POST['password'];
 
 try {
     // Prepare the SQL statement to prevent SQL injection
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email AND password = :password");
+    $stmt = $db->prepare("SELECT * FROM users WHERE email = :email AND password = :password");
     $stmt->execute(['email' => $email, 'password' => $password]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
