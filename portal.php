@@ -27,7 +27,7 @@ include('connection.php'); // Make sure the connection is included
                 $id = $_GET['id'];
 
                 // Fetch product details
-                $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id = :id");
+                $stmt = $db->prepare("SELECT * FROM products WHERE product_id = :id");
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -62,7 +62,7 @@ include('connection.php'); // Make sure the connection is included
                 $id = $_GET['id'];
 
                 // Fetch pricing and quantity details
-                $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id = :id");
+                $stmt = $db->prepare("SELECT * FROM products WHERE product_id = :id");
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
