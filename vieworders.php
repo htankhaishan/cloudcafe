@@ -1,9 +1,19 @@
 <?php
-require_once('auth.php');
+// Start session
+session_start();
+
+// Check if session variables are set (i.e., user is logged in)
+if (!isset($_SESSION['SESS_MEMBER_ID']) || !isset($_SESSION['SESS_FIRST_NAME'])) {
+    // If not logged in, redirect to the login page
+    header("Location: admin_index.php");
+    exit();
+}
+
+require_once('connection.php');
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,53 +57,52 @@ require_once('auth.php');
         }
     </script>
 </head>
-
 <body onload="showCurrentTime()">
     <div id="container">
         <div id="header_section">
-          <style>
-              table {
-                  width: 100%;
-                  border-collapse: collapse;
-              }
-              table th, table td {
-                  color: black; /* Make text black */
-                  padding: 8px;
-                  text-align: left;
-                  border: 1px solid #ddd;
-              }
-              table th {
-                  background-color: #f4f4f4; /* Optional: Add background to header */
-              }
-          </style>
-          <div style="float:right; margin-right:30px;">
-            <?php
-            require_once('connection.php');
-
-            if (isset($_SESSION['SESS_MEMBER_ID'])) {
-                $id = $_SESSION['SESS_MEMBER_ID'];
-                $query = $db->prepare("SELECT name, surname FROM members WHERE id = :id");
-                $query->execute(['id' => $id]);
-                $member = $query->fetch();
-
-                if ($member) {
-                    echo htmlspecialchars($member['name'] . ' ' . $member['surname']);
-                } else {
-                    echo "<span style='color:red;'>User not found.</span>";
+            <style>
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
                 }
-            } else {
-                echo "<span style='color:red;'>Session ID not set.</span>";
-            }
-            ?>
-            &nbsp;<a href="logout.php" id="logout-button">Logout</a>
-        </div>
-        <div id="menu_bg">
-            <div id="menu">
-                <ul>
-                    <li style="float:left;">
-                        <input id="currentTime" readonly style="border:0; font-size:25px; background-color:#000; color:#FF0000;" />
-                    </li>
-                </ul>
+                table th, table td {
+                    color: black; /* Make text black */
+                    padding: 8px;
+                    text-align: left;
+                    border: 1px solid #ddd;
+                }
+                table th {
+                    background-color: #f4f4f4; /* Optional: Add background to header */
+                }
+            </style>
+            <div style="float:right; margin-right:30px;">
+                <?php
+                // Fetch user info from session and database
+                if (isset($_SESSION['SESS_MEMBER_ID'])) {
+                    $id = $_SESSION['SESS_MEMBER_ID'];
+                    $query = $db->prepare("SELECT name, surname FROM members WHERE id = :id");
+                    $query->execute(['id' => $id]);
+                    $member = $query->fetch();
+
+                    if ($member) {
+                        echo htmlspecialchars($member['name'] . ' ' . $member['surname']);
+                    } else {
+                        echo "<span style='color:red;'>User not found.</span>";
+                    }
+                } else {
+                    echo "<span style='color:red;'>Session ID not set.</span>";
+                }
+                ?>
+                &nbsp;<a href="logout.php" id="logout-button">Logout</a>
+            </div>
+            <div id="menu_bg">
+                <div id="menu">
+                    <ul>
+                        <li style="float:left;">
+                            <input id="currentTime" readonly style="border:0; font-size:25px; background-color:#000; color:#FF0000;" />
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -162,7 +171,7 @@ require_once('auth.php');
                                   ?>
                               </td>
                           </tr>
-                      </tfoot>s
+                      </tfoot>
                     </table>
                     <div>
                         <label>Student Num: <input type="text" name="num" /></label>
@@ -182,5 +191,4 @@ require_once('auth.php');
         <p>Copyright &copy; Wings Cafe 2024</p>
     </footer>
 </body>
-
 </html>
