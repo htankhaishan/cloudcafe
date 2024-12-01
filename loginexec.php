@@ -38,7 +38,7 @@ $password = clean($_POST['password']);
 try {
     // Use a prepared statement to prevent SQL injection
     $qry = "SELECT * FROM members WHERE email = :email AND password = :password";
-    $stmt = $bd->prepare($qry);
+    $stmt = $pdo->prepare($qry); // Use $pdo instead of $bd
     $stmt->bindParam(':email', $login);
     $stmt->bindParam(':password', $password);
 
