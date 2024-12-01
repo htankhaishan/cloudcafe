@@ -1,34 +1,30 @@
 <?php
 session_start();
 
-include('connection.php'); // Including the PDO connection
+include("connection.php"); // Ensure $pdo is defined as the PDO connection
 
-// Get values from POST request
-$memid = $_POST['id'];
-$qty = $_POST['quantity'];
-$name = $_POST['name'];
-$transcode = $_POST['transcode'];
-$id = $_POST['butadd']; // Get the 'butadd' value from the form
+// Fetch input safely using prepared statements
+$email = $_POST['email'];
+$password = $_POST['password'];
 
-$pprice = (int)$_REQUEST['price'];
-$pn = $_REQUEST['name'];
-$total = $pprice * $qty;
+try {
+    // Prepare the SQL statement to prevent SQL injection
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email AND password = :password");
+    $stmt->execute(['email' => $email, 'password' => $password]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Prepare the insert query using PDO
-$stmt = $bd->prepare("INSERT INTO orderditems (customer, quantity, price, total, name, transactioncode) VALUES (:memid, :qty, :pprice, :total, :pn, :transcode)");
-
-// Bind parameters to the query
-$stmt->bindParam(':memid', $memid, PDO::PARAM_INT);
-$stmt->bindParam(':qty', $qty, PDO::PARAM_INT);
-$stmt->bindParam(':pprice', $pprice, PDO::PARAM_INT);
-$stmt->bindParam(':total', $total, PDO::PARAM_INT);
-$stmt->bindParam(':pn', $pn, PDO::PARAM_STR);
-$stmt->bindParam(':transcode', $transcode, PDO::PARAM_STR);
-
-// Execute the query
-$stmt->execute();
-
-// Redirect to the order page
-header("location: order.php");
-exit(); // Always call exit after header redirect
+    // Check if exactly one user exists with the provided credentials
+    if ($user) {
+        session_regenerate_id();
+        $_SESSION['SESS_MEMBER_ID'] = $user['id'];
+        $_SESSION['SESS_FIRST_NAME'] = $user['username'];
+        session_write_close();
+        header("location:home_admin.php");
+        exit();
+    } else {
+        echo "<h4 style='color:red;'>Please enter your correct login details!!!</h4>";
+    }
+} catch (PDOException $e) {
+    die("Error: " . $e->getMessage());
+}
 ?>
