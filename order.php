@@ -1,6 +1,6 @@
 <?php
 require_once('auth.php');
-include('connection.php'); // Ensure this defines $pdo as a PDO object
+include('connection.php'); // Ensure this defines $db as a PDO object
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +28,7 @@ include('connection.php'); // Ensure this defines $pdo as a PDO object
       <?php 
       $id = $_SESSION['SESS_MEMBER_ID'];
       try {
-          $stmt = $pdo->prepare("SELECT name, surname FROM members WHERE id = :id");  // Changed to $pdo
+          $stmt = $db->prepare("SELECT name, surname FROM members WHERE id = :id");  // Changed to $db
           $stmt->bindParam(':id', $id);
           $stmt->execute();
           $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -57,7 +57,7 @@ include('connection.php'); // Ensure this defines $pdo as a PDO object
       <div class="view1">
         <?php
         try {
-            $stmt = $pdo->query("SELECT * FROM products");  // Changed to $pdo
+            $stmt = $db->query("SELECT * FROM products");  // Changed to $db
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 echo '<div class="box">';
                 echo '<a rel="facebox" href="portal.php?id=' . htmlspecialchars($row["product_id"]) . '">';
@@ -88,7 +88,7 @@ include('connection.php'); // Ensure this defines $pdo as a PDO object
           <?php
           try {
               $memid = $_SESSION['SESS_FIRST_NAME'];
-              $stmt = $pdo->prepare("SELECT * FROM orderditems WHERE transactioncode = :transactioncode");  // Changed to $pdo
+              $stmt = $db->prepare("SELECT * FROM orderditems WHERE transactioncode = :transactioncode");  // Changed to $db
               $stmt->bindParam(':transactioncode', $memid);
               $stmt->execute();
               while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
