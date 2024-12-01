@@ -2,47 +2,37 @@
 // Start session
 session_start();
 
-// Check if the user is already logged in, if so, redirect to home_admin.php
-if (isset($_SESSION['email'])) {
-    header('Location: home_admin.php');
-    exit();
-}
-
-// Handle login form submission
-if (isset($_POST['email']) && isset($_POST['password'])) {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
-    // Example: Hardcoded check for demo purposes (replace with database check)
-    if ($email == 'admin' && $password == 'admin') {
-        // Start the session and set session variables
-        $_SESSION['email'] = $email;
-        $_SESSION['password'] = $password;
-
-        // Redirect to home_admin.php after successful login
-        header('Location: home_admin.php');
-        exit();
-    } else {
-        $error_message = "Invalid login credentials.";
-    }
-}
+// Unset session variables
+unset($_SESSION['SESS_MEMBER_ID']);
+unset($_SESSION['SESS_FIRST_NAME']);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Admin Login</title>
-    <link href="style.css" rel="stylesheet" type="text/css" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Wings Cafe</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <link href="src/facebox.css" media="screen" rel="stylesheet" type="text/css">
+    <script src="lib/jquery.js" type="text/javascript"></script>
+    <script src="src/facebox.js" type="text/javascript"></script>
     <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            $('a[rel*=facebox]').facebox({
+                loadingImage : 'src/loading.gif',
+                closeImage   : 'src/closelabel.png'
+            });
+        });
+
         function validateForm() {
-            var y = document.forms["login"]["email"].value;
-            var a = document.forms["login"]["password"].value;
-            if (y == null || y == "") {
-                alert("You must enter your username");
+            var email = document.forms["login"]["email"].value;
+            var password = document.forms["login"]["password"].value;
+
+            if (!email) {
+                alert("You must enter your email");
                 return false;
             }
-            if (a == null || a == "") {
+            if (!password) {
                 alert("You must enter your password");
                 return false;
             }
@@ -50,38 +40,44 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     </script>
 </head>
 <body>
-    <div id="container">
-        <div id="header_section">
-            <p>&nbsp;</p>
+<div id="container">
+    <header id="header_section"></header>
+    <nav id="menu_bg">
+        <div id="menu">
+            <ul>
+                <li><a href="index.php" class="current">Home</a></li>
+                <li><a href="aboutus.php">About Us</a></li>
+                <li><a href="contact.php">Contact</a></li>
+                <li><a href="loginindex.php">Order Now!</a></li>
+                <li><a href="admin_index.php">Admin</a></li>
+            </ul>
         </div>
-        <div id="content">
-            <div style="width:300px; margin:0 auto; position:relative; border:3px solid rgba(0,0,0,0); box-shadow:0 0 18px rgba(0,0,0,0.4); margin-top:20px;">
-                <form name="login" method="post" action="admin_index.php" onsubmit="return validateForm()">
-                    <div style="font-family:Arial, Helvetica, sans-serif; color:#000000; padding:5px; height:22px;">
-                        <strong>Administrator Login</strong>
-                    </div>
-                    <table width="286" align="center" style="color:black;">
-                        <tr>
-                            <td colspan="2">
-                                <?php if (isset($error_message)) { echo "<div style='color:red;'>$error_message</div>"; } ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><div align="right">Username</div></td>
-                            <td><input type="text" name="email" /></td>
-                        </tr>
-                        <tr>
-                            <td><div align="right">Password</div></td>
-                            <td><input type="password" name="password" /></td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td><input type="submit" name="Submit" value="Login" /></td>
-                        </tr>
-                    </table>
-                </form>
-            </div>
+    </nav>
+    <main id="content">
+        <div class="login-form">
+            <form name="login" method="post" action="admin.php" onsubmit="return validateForm()">
+                <div class="form-header">Administrator Login</div>
+                <table align="center">
+                    <tr>
+                        <td><label for="email">Email:</label></td>
+                        <td><input type="text" name="email" id="email"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="password">Password:</label></td>
+                        <td><input type="password" name="password" id="password"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <input type="submit" name="Submit" value="Login">
+                        </td>
+                    </tr>
+                </table>
+            </form>
         </div>
-    </div>
+    </main>
+</div>
+<footer>
+    <div class="middle">Copyright © Wings Cafe 2024</div>
+</footer>
 </body>
 </html>

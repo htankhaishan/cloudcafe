@@ -2,20 +2,20 @@
 // Start session
 session_start();
 
-// Include the database connection
+// Include database connection
 include('connection.php');
 
-$errmsg_arr = array();
-
 // Validation error flag
+$errmsg_arr = array();
 $errflag = false;
 
-// Function to sanitize values received from the form (using modern methods)
+// Sanitize input to prevent SQL injection
 function clean($str) {
-    return htmlspecialchars(trim($str), ENT_QUOTES, 'UTF-8');
+    $str = trim($str);
+    return $bd->real_escape_string($str);
 }
 
-// Generate a random password (kept unchanged from the original script)
+// Generate a random password (if necessary)
 function createRandomPassword() {
     $chars = "abcdefghijkmnopqrstuvwxyz023456789";
     srand((double)microtime() * 1000000);
@@ -29,45 +29,37 @@ function createRandomPassword() {
     }
     return $pass;
 }
+
 $confirmation = createRandomPassword();
 
-// Sanitize the POST values
+// Sanitize POST values
 $login = clean($_POST['user']);
 $password = clean($_POST['password']);
 
-try {
-    // Use a prepared statement to prevent SQL injection
-    $qry = "SELECT * FROM members WHERE email = :email AND password = :password";
-    $stmt = $db->prepare($qry); // Use $db instead of $bd
-    $stmt->bindParam(':email', $login);
-    $stmt->bindParam(':password', $password);
+// Create query with prepared statement
+$stmt = $bd->prepare("SELECT * FROM members WHERE email = ? AND password = ?");
+$stmt->bind_param("ss", $login, $password);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    // Execute the query
-    $stmt->execute();
-
-    // Check whether the query was successful
-    if ($stmt->rowCount() > 0) {
-        // Login Successful
-        $member = $stmt->fetch(PDO::FETCH_ASSOC);
-        session_regenerate_id();
-        $_SESSION['SESS_MEMBER_ID'] = $member['id'];
-        $_SESSION['SESS_FIRST_NAME'] = $confirmation;
-
+if ($result->num_rows > 0) {
+    // Login successful
+    session_regenerate_id();
+    $member = $result->fetch_assoc();
+    $_SESSION['SESS_MEMBER_ID'] = $member['id'];
+    $_SESSION['SESS_FIRST_NAME'] = $confirmation;
+    session_write_close();
+    header("Location: order.php");
+    exit();
+} else {
+    // Login failed
+    $errmsg_arr[] = 'Invalid Email or Password';
+    $errflag = true;
+    if ($errflag) {
+        $_SESSION['ERRMSG_ARR'] = $errmsg_arr;
         session_write_close();
-        header("location: order.php");
+        header("Location: loginindex.php");
         exit();
-    } else {
-        // Login failed
-        $errmsg_arr[] = 'Invalid email or password';
-        $errflag = true;
-        if ($errflag) {
-            $_SESSION['ERRMSG_ARR'] = $errmsg_arr;
-            session_write_close();
-            header("location: loginindex.php");
-            exit();
-        }
     }
-} catch (PDOException $e) {
-    die("Query failed: " . $e->getMessage());
 }
 ?>

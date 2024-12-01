@@ -1,46 +1,32 @@
-<?php 
+<?php
+// Start session
 session_start();
 
-// Include the database connection
+// Include database connection
 include('connection.php');
 
-// Check if $bd is defined
-if (!isset($bd)) {
-    die("Database connection is not defined.");
-}
+// Collect form data
+$studentnum = $_POST['studentnum'];
+$name = $_POST['name'];
+$surname = $_POST['surname'];
+$contacts = $_POST['contacts'];
+$password = $_POST['password'];
+$email = $_POST['email'];
 
 try {
-    // Retrieve form data
-    $studentnum = $_POST['studentnum'];
-    $name = $_POST['name'];
-    $surname = $_POST['surname'];
-    $contacts = $_POST['contacts'];
-    $password = $_POST['password'];
-    $email = $_POST['email'];
+    // Use prepared statements to prevent SQL injection
+    $stmt = $bd->prepare("INSERT INTO members (studentnum, name, surname, contacts, password, email) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssss", $studentnum, $name, $surname, $contacts, $password, $email);
+    $stmt->execute();
 
-    // Prepare and execute the SQL query using PDO
-    $sql = "INSERT INTO members (studentnum, name, surname, contacts, password, email) VALUES (:studentnum, :name, :surname, :contacts, :password, :email)";
-    $stmt = $bd->prepare($sql);
-
-    // Bind parameters
-    $stmt->bindParam(':studentnum', $studentnum);
-    $stmt->bindParam(':name', $name);
-    $stmt->bindParam(':surname', $surname);
-    $stmt->bindParam(':contacts', $contacts);
-    $stmt->bindParam(':password', $password);
-    $stmt->bindParam(':email', $email);
-
-    // Execute the statement
-    if ($stmt->execute()) {
-        // Redirect on success
-        header("Location: loginindex.php");
-        exit;
-    } else {
-        echo "Error: Could not execute the query.";
-    }
-} catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
+    // Redirect to login page after successful insertion
+    header("Location: loginindex.php");
+    exit();
+} catch (Exception $e) {
+    // Handle errors and display a message
+    die("Error: Could not connect. " . $e->getMessage());
 }
 
-// No need to explicitly close the connection; PDO handles it automatically.
+// Close the connection
+$bd->close();
 ?>

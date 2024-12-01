@@ -1,84 +1,48 @@
 <?php
 require_once('auth.php');
-include('connection.php'); // Make sure the connection is included
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Wings Cafe</title>
-    <style>
-        .style1 {
-            color: #000000;
-            font-weight: bold;
-            font-size: 24px;
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Portal - Wings Cafe</title>
 </head>
 <body>
-    <form action="saveorder.php" method="post">
-        <input name="id" type="hidden" value="<?php echo htmlspecialchars($_SESSION['SESS_MEMBER_ID']); ?>" />
-        <input name="transcode" type="hidden" value="<?php echo htmlspecialchars($_SESSION['SESS_FIRST_NAME']); ?>" />
-        
-        <table width="400" border="0" cellpadding="0" cellspacing="0">
-            <?php
-            if (isset($_GET['id'])) {
-                $id = $_GET['id'];
+<form action="saveorder.php" method="post">
+    <input name="id" type="hidden" value="<?php echo $_SESSION['SESS_MEMBER_ID']; ?>" />
+    <input name="transcode" type="hidden" value="<?php echo $_SESSION['SESS_FIRST_NAME']; ?>" />
+    <table width="400" border="0" cellpadding="0" cellspacing="0">
+        <?php
+        if (isset($_GET['id'])) {
+            include('connection.php');
+            $id = $_GET['id'];
+            $result = $bd->query("SELECT * FROM products WHERE product_id = $id");
 
-                // Fetch product details
-                $stmt = $db->prepare("SELECT * FROM products WHERE product_id = :id");
-                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-                $stmt->execute();
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                foreach ($result as $row3) {
-                    $id = $row3['id'];
-                    echo '<tr>';
-                    echo '<td width="80"><img src="images/bgr/' . htmlspecialchars($row3['product_photo']) . '" alt="Product Image" /></td>';
-                    echo '<td width="200"><span class="style1">' . htmlspecialchars($row3['name']) . '</span></td>';
-                    echo '<td width="120"></td>';
-                    echo '</tr>';
-                    echo '<tr>';
-                    echo '<td width="80">
-                            <input name="name" type="text" value="' . htmlspecialchars($row3['name']) . '" readonly/>
-                            <input name="id" type="hidden" value="' . htmlspecialchars($id) . '"/>
-                          </td>';
-                    echo '<td width="120"></td>';
-                    echo '</tr>';
-                }
+            while ($row3 = $result->fetch_assoc()) {
+                echo "<tr>
+                        <td><img src='images/bgr/{$row3['product_photo']}' width='75' height='75'></td>
+                        <td><input name='name' type='text' value='{$row3['name']}' readonly /></td>
+                      </tr>";
             }
-            ?>
-        </table>
-
-        <br />
-        <table width="400" border="0" cellpadding="0" cellspacing="0">
-            <tr>
-                <td width="128">Price</td>
-                <td width="93">Quantity</td>
-            </tr>
-            <?php
-            if (isset($_GET['id'])) {
-                $id = $_GET['id'];
-
-                // Fetch pricing and quantity details
-                $stmt = $db->prepare("SELECT * FROM products WHERE product_id = :id");
-                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-                $stmt->execute();
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                foreach ($result as $row3) {
-                    echo '<tr>';
-                    echo '<td>' . htmlspecialchars($row3['price']) . '</td>';
-                    echo '<input type="hidden" name="price" value="' . htmlspecialchars($row3['price']) . '">';
-                    echo '<input type="hidden" name="name" value="' . htmlspecialchars($row3['name']) . '">';
-                    echo '<td><input type="text" size="5" name="quantity"></td>';
-                    echo '<td><input name="butadd" type="image" value="' . htmlspecialchars($row3['id']) . '" src="images/button.png" /></td>';
-                    echo '</tr>';
-                }
-            }
-            ?>
-        </table>
-    </form>
+        }
+        ?>
+    </table>
+    <table width="400" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>Price:</td>
+            <td><input type="text" name="price" value="<?php echo $row3['price']; ?>" readonly /></td>
+        </tr>
+        <tr>
+            <td>Quantity:</td>
+            <td><input type="text" name="quantity" /></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Add to Order">
+            </td>
+        </tr>
+    </table>
+</form>
 </body>
 </html>
