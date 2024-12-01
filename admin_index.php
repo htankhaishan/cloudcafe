@@ -4,7 +4,12 @@ session_start();
 
 // Unset session variables
 unset($_SESSION['SESS_MEMBER_ID']);
+
 unset($_SESSION['SESS_FIRST_NAME']);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

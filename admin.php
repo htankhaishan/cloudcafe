@@ -1,9 +1,13 @@
 <?php
 session_start();
-
 include("connection.php");
 $id = $_POST['email'];
 $password = $_POST['password'];
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 
 // Create query with prepared statement
 $stmt = $bd->prepare("SELECT * FROM users WHERE email = :email AND password = :password");
