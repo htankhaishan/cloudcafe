@@ -26,10 +26,10 @@ $password = $_SESSION['password'];
 <body>
     <div id="container">
         <div id="header_section">
-            <div style="float:right; width:50px; margin-right:20px; background-color:#cccccc; text-align:center;">
-                <a href="admin_index.php">Logout</a>
-            </div>
-            <p>&nbsp;</p>
+          <div style="float:right; width:50px; margin-right:20px; background-color:#cccccc; text-align:center;">
+            <a href="admin_index.php?logout=true">Logout</a>
+          </div>
+          <p>&nbsp;</p>
         </div>
 
         <div id="menu_bg">
