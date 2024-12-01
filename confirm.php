@@ -14,29 +14,25 @@ $transactioncode = $_POST['transactioncode'];
 include('connection.php');
 $total = $_POST['total'];
 $transactiondate = date("m/d/Y");
-$transactioncode = $_POST['transactioncode'];    
+$transactioncode = $_POST['transactioncode'];  
 $student = $_POST['num'];
 
-// Use prepared statements to prevent SQL injection
-$stmt = $bd->prepare("SELECT studentnum FROM members WHERE studentnum = :student");
-$stmt->bindParam(':student', $student, PDO::PARAM_INT);
-$stmt->execute();
+// Using mysqli to query the database
+$result = $bd->query("SELECT * FROM members");
 
-if ($stmt->rowCount() == 0) {
-    echo "Wrong student number";
+while($info = $result->fetch_assoc()) {
+    $stud = $info['studentnum'];
+}
+
+if($student != $stud){
+    echo "wrong student Num";
     exit(0);
 }
 
-// Insert the order using a prepared statement
-$stmt = $bd->prepare("INSERT INTO wings_orders (cusid, total, transactiondate, transactioncode) 
-                      VALUES (:student, :total, :transactiondate, :transactioncode)");
-$stmt->bindParam(':student', $student, PDO::PARAM_INT);
-$stmt->bindParam(':total', $total);
-$stmt->bindParam(':transactiondate', $transactiondate);
-$stmt->bindParam(':transactioncode', $transactioncode);
-$stmt->execute();
-$stmt = null;
-$bd = null;
-?>
+// Inserting data using mysqli
+$query = "INSERT INTO wings_orders (cusid, total, transactiondate, transactioncode) VALUES ('$stud', '$total', '$transactiondate', '$transactioncode')";
+$bd->query($query);
 
-<a rel="facebox" href="order.php"><img src="images/28.png" width="75px" height="75px" /></a>
+// Redirecting or confirming the transaction
+echo '<a rel="facebox" href="order.php"><img src="images/28.png" width="75px" height="75px" /></a>';
+?>

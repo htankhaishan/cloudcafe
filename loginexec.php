@@ -2,64 +2,59 @@
 // Start session
 session_start();
 
-// Include database connection
+// Connect to MySQL server
 include('connection.php');
 
 // Validation error flag
 $errmsg_arr = array();
 $errflag = false;
 
-// Sanitize input to prevent SQL injection (PDO uses prepared statements)
+// Function to sanitize values received from the form. Prevents SQL injection
 function clean($str) {
-    return trim($str); // Simple sanitization for now, PDO will take care of escaping
+    $str = @trim($str);
+    // Removed get_magic_quotes_gpc check (no longer necessary)
+    $str = mysqli_real_escape_string($GLOBALS['bd'], $str);
+    return $str;
 }
 
-// Sanitize POST values
-$login = clean($_POST['user']);
-$password = clean($_POST['password']);
-
-// Generate a random confirmation string (not the password)
+// Function to create a random password
 function createRandomPassword() {
     $chars = "abcdefghijkmnopqrstuvwxyz023456789";
     srand((double)microtime() * 1000000);
-    $i = 0;
     $pass = '';
-    while ($i <= 7) {
+    for ($i = 0; $i <= 7; $i++) {
         $num = rand() % 33;
         $tmp = substr($chars, $num, 1);
         $pass = $pass . $tmp;
-        $i++;
     }
     return $pass;
 }
 
 $confirmation = createRandomPassword();
 
-// Create query with prepared statement
-try {
-    // Using PDO for parameterized queries to prevent SQL injection
-    $stmt = $bd->prepare("SELECT * FROM members WHERE email = :email AND password = :password");
-    $stmt->bindParam(':email', $login);
-    $stmt->bindParam(':password', $password);
-    $stmt->execute();
-    
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if ($result) {
+// Sanitize the POST values
+$login = clean($_POST['user']);
+$password = clean($_POST['password']);
+
+// Create query
+$qry = "SELECT * FROM members WHERE email='$login' AND password='$password'";
+$result = mysqli_query($GLOBALS['bd'], $qry);
+
+// Check whether the query was successful or not
+if ($result) {
+    if (mysqli_num_rows($result) > 0) {
         // Login successful
         session_regenerate_id();
+        $member = mysqli_fetch_assoc($result);
+        $_SESSION['SESS_MEMBER_ID'] = $member['id'];
+        $_SESSION['SESS_FIRST_NAME'] = $confirmation;  // Assuming you want to use the random password for first name (or it could be a real member name)
         
-        // Store user data in session
-        $_SESSION['SESS_MEMBER_ID'] = $result['id'];
-        $_SESSION['SESS_FIRST_NAME'] = $result['name']; // Assuming 'name' is stored in the database
         session_write_close();
-        
-        // Redirect to order page
         header("Location: order.php");
         exit();
     } else {
-        // Login failed, invalid credentials
-        $errmsg_arr[] = 'Invalid Email or Password';
+        // Login failed
+        $errmsg_arr[] = 'Invalid Email or password';
         $errflag = true;
         if ($errflag) {
             $_SESSION['ERRMSG_ARR'] = $errmsg_arr;
@@ -68,9 +63,7 @@ try {
             exit();
         }
     }
-
-} catch (PDOException $e) {
-    // Catch any errors and display them
-    die("Error: " . $e->getMessage());
+} else {
+    die("Query failed: " . mysqli_error($GLOBALS['bd']));
 }
 ?>

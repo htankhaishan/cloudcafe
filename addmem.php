@@ -1,8 +1,10 @@
 <?php
 session_start();
+
+// Include the database connection
 include('connection.php');
 
-// Collect form data
+// Get data from POST request
 $studentnum = $_POST['studentnum'];
 $name = $_POST['name'];
 $surname = $_POST['surname'];
@@ -10,27 +12,19 @@ $contacts = $_POST['contacts'];
 $password = $_POST['password'];
 $email = $_POST['email'];
 
-try {
-    // Use prepared statement to prevent SQL injection
-    $stmt = $bd->prepare("INSERT INTO members (studentnum, name, surname, contacts, password, email) 
-                          VALUES (:studentnum, :name, :surname, :contacts, :password, :email)");
-    $stmt->bindParam(':studentnum', $studentnum);
-    $stmt->bindParam(':name', $name);
-    $stmt->bindParam(':surname', $surname);
-    $stmt->bindParam(':contacts', $contacts);
-    $stmt->bindParam(':password', $password);
-    $stmt->bindParam(':email', $email);
-    
-    $stmt->execute();
-    
-    // Redirect to login page after successful insertion
+// Prepare the SQL statement
+$sql = "INSERT INTO members (studentnum, name, surname, contacts, password, email) VALUES ('$studentnum', '$name', '$surname', '$contacts', '$password', '$email')";
+
+// Execute the query using mysqli_query
+if (mysqli_query($bd, $sql)) {
+    // If the query was successful, redirect to the login page
     header("Location: loginindex.php");
     exit();
-} catch (PDOException $e) {
-    // Handle errors and display a message
-    die("Error: Could not connect. " . $e->getMessage());
+} else {
+    // If there was an error with the query, display the error message
+    die("Could not connect: " . mysqli_error($bd));
 }
 
-// Close the connection
-$bd = null;
+// Close the database connection
+mysqli_close($bd);
 ?>

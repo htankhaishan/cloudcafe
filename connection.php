@@ -1,25 +1,15 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL); 
+// Create connection to the database
+$servername = "localhost";
+$username = "root"; // Your MySQL username
+$password = "@Bcde12345"; // Your MySQL password (empty for XAMPP by default)
+$dbname = "wings"; // Your database name
 
-$mysql_hostname = "localhost";
-$mysql_user = "root";
-$mysql_password = "@Bcde12345";
-$mysql_database = "wings";
+// Create a connection
+$bd = new mysqli($servername, $username, $password, $dbname);
 
-try {
-    // Create a new PDO instance
-    $bd = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_database", $mysql_user, $mysql_password);
-    
-    // Set the PDO error mode to exception
-    $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    // Set the charset for the connection
-    $bd->exec("SET NAMES 'utf8mb4'");
-
-} catch (PDOException $e) {
-    // If there is an error, display it
-    die("Connection failed: " . $e->getMessage());
+// Check connection
+if ($bd->connect_error) {
+    die("Connection failed: " . $bd->connect_error);
 }
 ?>

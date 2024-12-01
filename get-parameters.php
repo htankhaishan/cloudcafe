@@ -1,34 +1,34 @@
 <?php
-require 'vendor/autoload.php';
+  # Retrieve settings from Parameter Store
+  error_log('Retrieving settings');
+  require 'aws.phar';
+  
+  $az = file_get_contents('http://169.254.169.254/latest/meta-data/placement/availability-zone');
+  $region = substr($az, 0, -1);
+  $ssm_client = new Aws\Ssm\SsmClient([
+     'version' => 'latest',
+     'region'  => $region
+  ]);
+  
+  try {
+    # Retrieve settings from Parameter Store
+    $result = $ssm_client->GetParametersByPath(['Path' => '/example/', 'WithDecryption' => true]);
 
-use Aws\Ssm\SsmClient;
-use Aws\Exception\AwsException;
-
-$az = file_get_contents('http://169.254.169.254/latest/meta-data/placement/availability-zone');
-$region = substr($az, 0, -1);
-
-$ssm_client = new SsmClient([
-    'version' => 'latest',
-    'region'  => $region
-]);
-
-try {
-    $result = $ssm_client->getParametersByPath([
-        'Path' => '/example/',
-        'WithDecryption' => true
-    ]);
-
-    $values = [];
-    foreach ($result['Parameters'] as $p) {
+    # Extract individual parameters
+    foreach($result['Parameters'] as $p) {
         $values[$p['Name']] = $p['Value'];
     }
 
-    $ep = $values['/example/endpoint'] ?? '';
-    $un = $values['/example/username'] ?? '';
-    $pw = $values['/example/password'] ?? '';
-    $db = $values['/example/database'] ?? '';
-} catch (AwsException $e) {
-    error_log("Error retrieving parameters: " . $e->getMessage());
-    $ep = $un = $pw = $db = '';
-}
+    $ep = $values['/example/endpoint'];
+    $un = $values['/example/username'];
+    $pw = $values['/example/password'];
+    $db = $values['/example/database'];
+  }
+  catch (Exception $e) {
+    $ep = '';
+    $db = '';
+    $un = '';
+    $pw = '';
+  }
+
 ?>

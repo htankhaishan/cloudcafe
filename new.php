@@ -1,100 +1,225 @@
 <?php
-session_start();
+	//Start session
+	session_start();
+	
+	
 ?>
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Members Registration - Wings Cafe</title>
-    <link href="style.css" rel="stylesheet" type="text/css">
-    <script src="lib/jquery.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        function validateForm() {
-            var j = document.forms["abc"]["studentnum"].value;
-            var a = document.forms["abc"]["name"].value;
-            var b = document.forms["abc"]["surname"].value;
-            var d = document.forms["abc"]["email"].value;
-            var e = document.forms["abc"]["password"].value;
-            var f = document.forms["abc"]["ambot"].value;
-            var g = document.forms["abc"]["contacts"].value;
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Wings Cafe</title>
+<!--sa poip up-->
+<link href="style.css" rel="stylesheet" type="text/css" />
+<link href="src/facebox.css" media="screen" rel="stylesheet" type="text/css" />
+   <script src="lib/jquery.js" type="text/javascript"></script>
+  <script src="src/facebox.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $('a[rel*=facebox]').facebox({
+        loadingImage : 'src/loading.gif',
+        closeImage   : 'src/closelabel.png'
+      })
+    })
+  </script>
 
-            if (!j || !a || !b || !d || !e || !f || !g) {
-                alert("All fields must be filled out.");
-                return false;
-            }
+  <!--sa validate from-->
+<script type="text/javascript">
+function validateForm()
+{
 
-            if (e !== f) {
-                alert("Passwords do not match.");
-                return false;
-            }
+var j=document.forms["abc"]["studentnum"].value;
+var a=document.forms["abc"]["name"].value;
+var b=document.forms["abc"]["surname"].value;
+var d=document.forms["abc"]["email"].value;
+var e=document.forms["abc"]["password"].value;
+var f=document.forms["abc"]["ambot"].value;
+var g=document.forms["abc"]["contacts"].value;
 
-            var atpos = d.indexOf("@");
-            var dotpos = d.lastIndexOf(".");
-            if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= d.length) {
-                alert("Not a valid email address.");
-                return false;
-            }
-        }
-    </script>
+if ((j==null || j==""))
+  {
+  alert("you must enter your student #");
+  return false;
+  }
+if ((a==null || a==""))
+  {
+  alert("you must enter your username");
+  return false;
+  }
+if ((b==null || b==""))
+  {
+  alert("you must enter your password");
+  return false;
+  }
+if ((d==null || d==""))
+  {
+  alert("you must enter your email address");
+  return false;
+  }
+if ((e==null || e==""))
+  {
+  alert("you must enter your password");
+  return false;
+}
+if ((f==null || f==""))
+  {
+  alert("Retype password");
+  return false;
+  }
+if ((g==null || g==""))
+  {
+  alert("you must enter your contact number");
+  return false;
+}
+
+if( e != f ) {
+alert("Password does not match");
+  return false;
+}
+var atpos=d.indexOf("@");
+var dotpos=d.lastIndexOf(".");
+if (atpos<1 || dotpos<atpos+2 || dotpos+2>=d.length)
+  {
+  alert("Not a valid e-mail address");
+  return false;
+  } 
+
+}
+</script>
+
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    
+    //called when key is pressed in textbox
+	$("#contact").keypress(function (e)  
+	{ 
+	  //if the letter is not digit then display error and don't type anything
+	  if( e.which!=8 && e.which!=0 && (e.which<48 || e.which>57))
+	  {
+		//display error message
+		$("#errmsg").html("Number Only").show().fadeOut("slow"); 
+	    return false;
+      }	
+	});
+	
+
+  });
+  </script>
+
+</script>
+
+<style type="text/css">
+<!--
+.style1 {
+	color: #FF0000;
+	font-weight: bold;
+}
+.style2 {color: #FF0000}
+-->
+</style>
 </head>
+
 <body>
-    <div id="container">
-        <header id="header_section"></header>
-        <nav id="menu_bg">
-            <div id="menu">
-                <ul>
-                    <li><a href="index.php" class="current">Home</a></li>
-                    <li><a href="aboutus.php">About Us</a></li>
-                    <li><a href="contact.php">Contact</a></li>
-                    <li><a href="loginindex.php">Order Now!</a></li>
-                    <li><a href="admin_index.php">Admin</a></li>
-                </ul>
-            </div>
-        </nav>
-        <main id="content">
-            <div class="registration-form">
-                <form id="form1" name="abc" method="post" action="addmem.php" onsubmit="return validateForm()">
-                    <h2>Members Registration</h2>
-                    <table align="center">
-                        <tr>
-                            <td><label for="studentnum">Student Num:</label></td>
-                            <td><input type="text" name="studentnum" id="studentnum"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="name">First Name:</label></td>
-                            <td><input type="text" name="name" id="name"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="surname">Last Name:</label></td>
-                            <td><input type="text" name="surname" id="surname"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="email">Email:</label></td>
-                            <td><input type="email" name="email" id="email"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="password">Password:</label></td>
-                            <td><input type="password" name="password" id="password"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="ambot">Retype Password:</label></td>
-                            <td><input type="password" name="ambot" id="ambot"></td>
-                        </tr>
-                        <tr>
-                            <td><label for="contacts">Contact Number:</label></td>
-                            <td><input type="text" name="contacts" id="contacts"></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <input type="submit" value="Save">
-                                <input type="reset" value="Clear">
-                            </td>
-                        </tr>
-                    </table>
-                </form>
-            </div>
-        </main>
+<div id="container">
+  <div id="header_section"> 
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+  </div>
+  <div id="menu_bg">
+    <div id="menu">
+      <ul>
+        <li><a href="index.php"  class="current">Home</a></li>
+        <li><a href="aboutus.php">About Us</a></li>
+		<li><a href="contact.php">Contact</a></li>
+        <li><a href="loginindex.php">Order Now! </a></li>
+		<li><a href="admin_index.php">Admin </a></li>
+      </ul>
     </div>
+  </div>
+  <div id="content">
+<div style="width:400px; margin:0 auto; position:relative; border:3px solid rgba(0,0,0,0); -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; -webkit-box-shadow:0 0 18px rgba(0,0,0,0.4); -moz-box-shadow:0 0 18px rgba(0,0,0,0.4); box-shadow:0 0 18px rgba(0,0,0,0.4); margin-top:20px; color:#000000;">
+  <form id="form1" name="abc" method="post" action="addmem.php" onsubmit="return validateForm()">
+ <div style=" font-family:Arial, Helvetica, sans-serif; color:#000000; padding:5px; height:22px; width:390px;"> 
+ 
+ 
+ <div style="float:left;"><strong>Members Registration of Wings Cafe </strong></div>
+
+ 
+ 
+ </div>
+  <table width="368" align="center">
+  <tr>
+    <td colspan="2"><div style="font-family:Arial, Helvetica, sans-serif; color:#FF0000; font-size:12px;"><?php
+	if( isset($_SESSION['ERRMSG_ARR']) && is_array($_SESSION['ERRMSG_ARR']) && count($_SESSION['ERRMSG_ARR']) >0 ) {
+		echo '<ul class="err">';
+		foreach($_SESSION['ERRMSG_ARR'] as $msg) {
+			echo '<li>',$msg,'</li>'; 
+		}
+		echo '</ul>';
+		unset($_SESSION['ERRMSG_ARR']);
+	}
+?></div></td>
+  </tr>
+  	  <tr>
+  <td width="120" valign="top"><div align="right">Student Num:</div></td>
+        <td width="236"><input type="text" name="studentnum">
+              <span class="style2"></span></td>
+      </tr>
+	  <tr>
+  <td width="120" valign="top"><div align="right">Firstname:</div></td>
+        <td width="236"><input type="text" name="name">
+              <span class="style2"></span></td>
+      </tr>
+              <tr>
+                <td valign="top"><div align="right">Lastname:</div></td>
+                <td><input type="text" name="surname">
+                  <span class="style2"></span></td>
+              </tr>
+			 
+              <tr>
+                <td valign="top"><div align="right">Email:</div></td>
+                <td><input type="text" name="email">
+                  <span class="style2"></span></td>
+              </tr>
+			  <tr>
+                <td valign="top"><div align="right">Password:</div></td>
+                <td><input type="password" name="password">
+                  <span class="style2"></span></td>
+              </tr>
+              <tr>
+                <td valign="top"><div align="right">Retype Password:</div></td>
+                <td><input type="password" name="ambot">
+                  <span class="style2"></span></td>
+              </tr>
+              <tr>
+                <td valign="top"><div align="right">Contact Number:</div></td>
+                <td><input name="contacts" type="text" id="contacts" size="18">
+                      <span style="font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#FF0000; font-weight:bold;" id="errmsg"></span><span class="style2"></span></td>
+        </tr>
+              
+ <tr>
+                <td valign="top">&nbsp;</td>
+        <td><input type="submit" value="Save"> <label>
+                  <input type="reset" name="Reset" value="Clear" />
+                </label></td>
+      </tr>
+</table>
+    
+  </form>
+  <div id="container_end"> </div>
+</div>
+<div id="footer">
+    	<div class="top"></div>
+        <div class="middle">
+    Copyright © Wings Cafe 2013</div>
+        <div class="button"></div>
+</div>
+<div>
+</div>
 </body>
+
 </html>
+</div>
+</body>
+</html>		

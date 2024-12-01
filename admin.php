@@ -1,31 +1,37 @@
 <?php
 session_start();
-include("connection.php");
-$id = $_POST['email'];
+include("connection.php");  // Include the connection to MySQL
+
+$email = $_POST['email'];
 $password = $_POST['password'];
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// Sanitize the input
+$email = mysqli_real_escape_string($bd, $email);
+$password = mysqli_real_escape_string($bd, $password);
 
+// Query the database to check credentials
+$sql = "SELECT * FROM users WHERE email = '$email' AND password = '$password'";
+$result = mysqli_query($bd, $sql);
 
-// Create query with prepared statement
-$stmt = $bd->prepare("SELECT * FROM users WHERE email = :email AND password = :password");
-$stmt->bindParam(':email', $id);
-$stmt->bindParam(':password', $password);
-$stmt->execute();
-$result = $stmt->fetch(PDO::FETCH_ASSOC);
+// Check if user exists
+if (mysqli_num_rows($result) == 1) {
+    // Fetch user data
+    $user = mysqli_fetch_assoc($result);
 
-if ($result) {
-    session_regenerate_id();
-    $_SESSION['SESS_MEMBER_ID'] = $result['id'];
-    $_SESSION['SESS_FIRST_NAME'] = $result['username'];
-    session_write_close();
+    // Store user details in session variables
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['email'] = $user['email'];
+    $_SESSION['username'] = $user['username'];
+    $_SESSION['SESS_FIRST_NAME'] = $user['first_name']; // Set first name in session
+
+    // Debugging: Check if session variable is set
+    echo "First Name: " . $_SESSION['SESS_FIRST_NAME'];  // This will print the first name to the screen
+
+    // Redirect to home_admin.php
     header("Location: home_admin.php");
     exit();
 } else {
-    echo "<h4 style='color:red;'>Please enter your correct login details!!!</h4>";
+    // Invalid login
+    echo "<h4 style='color:red;'>Please enter your correct login details!</h4>";
 }
-$stmt = null;
-$bd = null;
 ?>
