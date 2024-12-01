@@ -1,4 +1,4 @@
-<?php
+<?php 
 // Start session
 session_start();
 
@@ -60,21 +60,6 @@ require_once('connection.php');
 <body onload="showCurrentTime()">
     <div id="container">
         <div id="header_section">
-            <style>
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                }
-                table th, table td {
-                    color: black; /* Make text black */
-                    padding: 8px;
-                    text-align: left;
-                    border: 1px solid #ddd;
-                }
-                table th {
-                    background-color: #f4f4f4; /* Optional: Add background to header */
-                }
-            </style>
             <div style="float:right; margin-right:30px;">
                 <?php
                 // Fetch user info from session and database
