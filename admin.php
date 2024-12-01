@@ -1,32 +1,35 @@
 <?php
 session_start();
 
-include("connection.php");
-$id = $_POST['email'];
-$password = $_POST['password'];
-$id = mysql_real_escape_string($id);
-$password = mysql_real_escape_string($password);
+include("connection.php"); // Ensure $pdo is defined as the PDO connection
 
-$sql = "select * from users where email = '$id' and password = '$password'";
-$result = mysql_query($sql);
-$count = mysql_num_rows($result);
-if($count ==1){
-// session_regenerate_id();
-			session_regenerate_id();
-			$member = mysql_fetch_assoc($result);
-			$_SESSION['SESS_MEMBER_ID'] = $member['id'];
-			$_SESSION['SESS_FIRST_NAME'] = $member['username'];
-			session_write_close();
-header("location:home_admin.php");
+// Check if email and password are set in the POST request
+if (isset($_POST['email']) && isset($_POST['password'])) {
+    // Fetch input safely using prepared statements
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
-}
-else{
-echo "<h4 style='color:red;'>";
-			
-			
-			echo "Please enter your correct login details!!!";
-			echo "</h4>";
-die(mysql_error());
-			
+    try {
+        // Prepare the SQL statement to prevent SQL injection
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email AND password = :password");
+        $stmt->execute(['email' => $email, 'password' => $password]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Check if exactly one user exists with the provided credentials
+        if ($user) {
+            session_regenerate_id(); // Regenerate session ID to prevent session fixation attacks
+            $_SESSION['SESS_MEMBER_ID'] = $user['id'];
+            $_SESSION['SESS_FIRST_NAME'] = $user['username'];
+            session_write_close();
+            header("location:home_admin.php"); // Redirect to admin page
+            exit();
+        } else {
+            echo "<h4 style='color:red;'>Please enter your correct login details!!!</h4>";
+        }
+    } catch (PDOException $e) {
+        die("Error: " . $e->getMessage()); // Handle any database connection or query issues
+    }
+} else {
+    echo "<h4 style='color:red;'>Please fill in both email and password.</h4>";
 }
 ?>
