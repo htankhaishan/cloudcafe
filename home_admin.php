@@ -1,9 +1,5 @@
 <?php
 session_start();
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,15 +8,50 @@ error_reporting(E_ALL);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Home - Wings Cafe</title>
     <link href="style.css" rel="stylesheet" type="text/css">
+    <link href="css/ble.css" rel="stylesheet" type="text/css">
+    <link href="css/main.css" rel="stylesheet" type="text/css">
+
+    <!-- Popup Scripts -->
+    <link href="src/facebox.css" media="screen" rel="stylesheet" type="text/css" />
+    <script src="lib/jquery.js" type="text/javascript"></script>
+    <script src="src/facebox.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            $('a[rel*=facebox]').facebox({
+                loadingImage : 'src/loading.gif',
+                closeImage   : 'src/closelabel.png'
+            });
+        });
+    </script>
+
+    <!-- Form Validation -->
+    <script type="text/javascript">
+        function validateForm() {
+            var y = document.forms["login"]["email"].value;
+            var a = document.forms["login"]["password"].value;
+            if ((y == null || y == "")) {
+                alert("You must enter your username");
+                return false;
+            }
+            if ((a == null || a == "")) {
+                alert("You must enter your password");
+                return false;
+            }
+        }
+    </script>
 </head>
 <body>
     <div id="container">
-        <header id="header_section">
-            <div style="float:right; width:50px; margin-right:20px;">
+        <div id="header_section">
+            <div style="float:right; width:50px; margin-right:20px; background-color:#cccccc; text-align:center;">
                 <a href="admin_index.php">Logout</a>
             </div>
-        </header>
-        <nav id="menu_bg">
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+        </div>
+
+        <!-- Navigation Menu -->
+        <div id="menu_bg">
             <div id="menu">
                 <ul>
                     <li><a href="index.php" class="current">Home</a></li>
@@ -30,12 +61,34 @@ error_reporting(E_ALL);
                     <li><a href="admin_index.php">Admin</a></li>
                 </ul>
             </div>
-        </nav>
-        <main id="content">
-            <div class="welcome-box">
-                <div class="welcome-message">
-                    <strong>Welcome, <?php echo $_SESSION['SESS_FIRST_NAME']; ?></strong>
+        </div>
+
+        <!-- Admin Content Section -->
+        <div id="content">
+            <div style="width:300px; margin:0 auto; position:relative; border:3px solid rgba(0,0,0,0); 
+                        -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; 
+                        -webkit-box-shadow:0 0 18px rgba(0,0,0,0.4); -moz-box-shadow:0 0 18px rgba(0,0,0,0.4); 
+                        box-shadow:0 0 18px rgba(0,0,0,0.4); margin-top:10%;">
+                <div style="height:40px; margin-bottom:10px;">
+                    <div style="float:left; margin-left:10px; margin-top:10px; color:black">
+                        <strong>Welcome</strong> <?php echo $_SESSION['SESS_FIRST_NAME']; ?>
+                    </div>
                 </div>
-                <div class="admin-actions">
-                    <a href="vieworders.php" class="action-button">
-                        <img src="images/84
+
+                <div align="center">
+                    <!-- Link to View Orders -->
+                    <a href="vieworders.php">
+                        <img src="images/84.png" border="0" style="padding:5px;" title="View all orders" />
+                    </a><br />
+
+                    <!-- Link to Add Products -->
+                    <a href="addproduct.php">
+                        <img src="images/78.png" border="0" style="padding:5px;" title="Add products" />
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
