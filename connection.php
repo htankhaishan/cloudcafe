@@ -8,9 +8,9 @@ $mysql_password = "@Bcde12345";
 $mysql_database = "wings";
 
 try {
-    // Create a new PDO connection
-    $pdo = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_database;charset=utf8", $mysql_user, $mysql_password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // Enable exceptions for errors
+    // Create a new PDO connection and assign it to $bd
+    $bd = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_database;charset=utf8", $mysql_user, $mysql_password);
+    $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // Enable exceptions for errors
     echo "Connected successfully to the database '$mysql_database'";
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
