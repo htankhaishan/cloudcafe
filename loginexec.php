@@ -9,13 +9,16 @@ include('connection.php');
 $errmsg_arr = array();
 $errflag = false;
 
-// Sanitize input to prevent SQL injection
+// Sanitize input to prevent SQL injection (PDO uses prepared statements)
 function clean($str) {
-    $str = trim($str);
-    return $bd->real_escape_string($str);
+    return trim($str); // Simple sanitization for now, PDO will take care of escaping
 }
 
-// Generate a random password (if necessary)
+// Sanitize POST values
+$login = clean($_POST['user']);
+$password = clean($_POST['password']);
+
+// Generate a random confirmation string (not the password)
 function createRandomPassword() {
     $chars = "abcdefghijkmnopqrstuvwxyz023456789";
     srand((double)microtime() * 1000000);
@@ -32,34 +35,42 @@ function createRandomPassword() {
 
 $confirmation = createRandomPassword();
 
-// Sanitize POST values
-$login = clean($_POST['user']);
-$password = clean($_POST['password']);
-
 // Create query with prepared statement
-$stmt = $bd->prepare("SELECT * FROM members WHERE email = ? AND password = ?");
-$stmt->bind_param("ss", $login, $password);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    // Login successful
-    session_regenerate_id();
-    $member = $result->fetch_assoc();
-    $_SESSION['SESS_MEMBER_ID'] = $member['id'];
-    $_SESSION['SESS_FIRST_NAME'] = $confirmation;
-    session_write_close();
-    header("Location: order.php");
-    exit();
-} else {
-    // Login failed
-    $errmsg_arr[] = 'Invalid Email or Password';
-    $errflag = true;
-    if ($errflag) {
-        $_SESSION['ERRMSG_ARR'] = $errmsg_arr;
+try {
+    // Using PDO for parameterized queries to prevent SQL injection
+    $stmt = $bd->prepare("SELECT * FROM members WHERE email = :email AND password = :password");
+    $stmt->bindParam(':email', $login);
+    $stmt->bindParam(':password', $password);
+    $stmt->execute();
+    
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($result) {
+        // Login successful
+        session_regenerate_id();
+        
+        // Store user data in session
+        $_SESSION['SESS_MEMBER_ID'] = $result['id'];
+        $_SESSION['SESS_FIRST_NAME'] = $result['name']; // Assuming 'name' is stored in the database
         session_write_close();
-        header("Location: loginindex.php");
+        
+        // Redirect to order page
+        header("Location: order.php");
         exit();
+    } else {
+        // Login failed, invalid credentials
+        $errmsg_arr[] = 'Invalid Email or Password';
+        $errflag = true;
+        if ($errflag) {
+            $_SESSION['ERRMSG_ARR'] = $errmsg_arr;
+            session_write_close();
+            header("Location: loginindex.php");
+            exit();
+        }
     }
+
+} catch (PDOException $e) {
+    // Catch any errors and display them
+    die("Error: " . $e->getMessage());
 }
 ?>

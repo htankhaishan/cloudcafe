@@ -32,11 +32,11 @@ unset($_SESSION['SESS_FIRST_NAME']);
                     <table align="center">
                         <tr>
                             <td><label for="email">Email:</label></td>
-                            <td><input type="text" name="user" id="email"></td>
+                            <td><input type="text" name="user" id="email" required></td>
                         </tr>
                         <tr>
                             <td><label for="password">Password:</label></td>
-                            <td><input type="password" name="password" id="password"></td>
+                            <td><input type="password" name="password" id="password" required></td>
                         </tr>
                         <tr>
                             <td><a href="new.php">No account? Register here</a></td>
