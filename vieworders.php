@@ -48,9 +48,12 @@ require_once('auth.php');
             <tbody>
                 <?php
                 include('connection.php');
-                $result3 = $bd->query("SELECT * FROM wings_orders");
 
-                while ($row3 = $result3->fetch_assoc()) {
+                // Prepare and execute the query
+                $stmt = $bd->query("SELECT * FROM wings_orders");
+
+                // Fetch each row as an associative array
+                while ($row3 = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     echo '<tr>';
                     echo '<td>' . $row3['cusid'] . '</td>';
                     echo '<td>' . 'M' . $row3['total'] . '.00' . '</td>';
