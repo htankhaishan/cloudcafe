@@ -1,14 +1,14 @@
 <?php
 require_once('auth.php');
 include('connection.php'); // Make sure the connection is included
-
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <meta charset="UTF-8">
     <title>Wings Cafe</title>
-    <style type="text/css">
+    <style>
         .style1 {
             color: #000000;
             font-weight: bold;
@@ -16,7 +16,6 @@ include('connection.php'); // Make sure the connection is included
         }
     </style>
 </head>
-
 <body>
     <form action="saveorder.php" method="post">
         <input name="id" type="hidden" value="<?php echo htmlspecialchars($_SESSION['SESS_MEMBER_ID']); ?>" />
@@ -27,16 +26,14 @@ include('connection.php'); // Make sure the connection is included
             if (isset($_GET['id'])) {
                 $id = $_GET['id'];
 
-                // Use PDO to fetch product details
+                // Fetch product details
                 $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id = :id");
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // Display product details
                 foreach ($result as $row3) {
                     $id = $row3['id'];
-
                     echo '<tr>';
                     echo '<td width="80"><img src="images/bgr/' . htmlspecialchars($row3['product_photo']) . '" alt="Product Image" /></td>';
                     echo '<td width="200"><span class="style1">' . htmlspecialchars($row3['name']) . '</span></td>';
@@ -55,9 +52,7 @@ include('connection.php'); // Make sure the connection is included
         </table>
 
         <br />
-        <label style="color:#000000;"></label>
-        <br />
-        <table width="400" border="0" cellpadding="0" cellspacing="0" style="color:#000000;"> 
+        <table width="400" border="0" cellpadding="0" cellspacing="0">
             <tr>
                 <td width="128">Price</td>
                 <td width="93">Quantity</td>
@@ -66,7 +61,7 @@ include('connection.php'); // Make sure the connection is included
             if (isset($_GET['id'])) {
                 $id = $_GET['id'];
 
-                // Use PDO to fetch pricing and quantity information
+                // Fetch pricing and quantity details
                 $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id = :id");
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
