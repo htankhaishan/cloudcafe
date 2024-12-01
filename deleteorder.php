@@ -3,7 +3,7 @@ if (isset($_GET['id'])) {
     include('connection.php');
     $id = $_GET['id'];
 
-    // Use a prepared statement to prevent SQL injection
+    // Use prepared statement to prevent SQL injection
     $stmt = $bd->prepare("DELETE FROM orderditems WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();

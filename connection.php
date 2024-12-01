@@ -1,7 +1,7 @@
 <?php
 $mysql_hostname = "localhost";
 $mysql_user = "root";
-$mysql_password = "@Bcde12345";
+$mysql_password = "";
 $mysql_database = "wings";
 
 // Create a new mysqli object

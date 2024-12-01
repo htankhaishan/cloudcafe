@@ -14,7 +14,7 @@ $transactioncode = $_POST['transactioncode'];
 include('connection.php');
 $total = $_POST['total'];
 $transactiondate = date("m/d/Y");
-$transactioncode = $_POST['transactioncode'];	
+$transactioncode = $_POST['transactioncode'];    
 $student = $_POST['num'];
 
 // Use prepared statements to prevent SQL injection

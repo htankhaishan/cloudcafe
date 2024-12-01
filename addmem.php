@@ -1,8 +1,6 @@
 <?php
-// Start session
 session_start();
 
-// Include database connection
 include('connection.php');
 
 // Collect form data
@@ -14,10 +12,11 @@ $password = $_POST['password'];
 $email = $_POST['email'];
 
 try {
-    // Use prepared statements to prevent SQL injection
+    // Use prepared statement to prevent SQL injection
     $stmt = $bd->prepare("INSERT INTO members (studentnum, name, surname, contacts, password, email) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("ssssss", $studentnum, $name, $surname, $contacts, $password, $email);
     $stmt->execute();
+    $stmt->close();
 
     // Redirect to login page after successful insertion
     header("Location: loginindex.php");
