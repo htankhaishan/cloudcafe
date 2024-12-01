@@ -1,17 +1,18 @@
 <?php
-// Set database credentials
-$host = 'localhost';  // or your database host
-$dbname = 'wings'; // your database name
-$username = 'root'; // your username
-$password = '@Bcde12345'; // your password
+error_reporting(E_ALL);
+ini_set('display_errors', 1);  // Show errors for debugging
+
+$mysql_hostname = "127.0.0.1";
+$mysql_user = "root";
+$mysql_password = "@Bcde12345";
+$mysql_database = "wings";
 
 try {
-    // Create PDO instance
-    $bd = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    // Set the PDO error mode to exception
-    $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Create a new PDO connection and assign it to $pdo
+    $db = new PDO("mysql:host=$mysql_hostname;dbname=$mysql_database;charset=utf8", $mysql_user, $mysql_password);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // Enable exceptions for errors
+    echo "Connected successfully to the database '$mysql_database'";
 } catch (PDOException $e) {
-    // In case of an error, display the error message
-    die("Error: " . $e->getMessage());
+    die("Connection failed: " . $e->getMessage());
 }
 ?>
