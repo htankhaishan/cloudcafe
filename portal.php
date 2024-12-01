@@ -1,6 +1,7 @@
 <?php
-include('connection.php'); 
-require_once('auth.php');	
+require_once('auth.php');
+include('connection.php'); // Make sure the connection is included
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -8,13 +9,11 @@ require_once('auth.php');
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <title>Wings Cafe</title>
     <style type="text/css">
-        <!--
         .style1 {
             color: #000000;
             font-weight: bold;
             font-size: 24px;
         }
-        -->
     </style>
 </head>
 
@@ -26,17 +25,16 @@ require_once('auth.php');
         <table width="400" border="0" cellpadding="0" cellspacing="0">
             <?php
             if (isset($_GET['id'])) {
-                include('connection.php');
                 $id = $_GET['id'];
 
-                // Securely prepare and execute the SQL query using mysqli
-                $stmt = $conn->prepare("SELECT * FROM products WHERE product_id = ?");
-                $stmt->bind_param("i", $id);
+                // Use PDO to fetch product details
+                $stmt = $bd->prepare("SELECT * FROM products WHERE product_id = :id");
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
-                $result = $stmt->get_result();
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // Fetch and display product details
-                while ($row3 = $result->fetch_assoc()) {
+                // Display product details
+                foreach ($result as $row3) {
                     $id = $row3['id'];
 
                     echo '<tr>';
@@ -52,10 +50,10 @@ require_once('auth.php');
                     echo '<td width="120"></td>';
                     echo '</tr>';
                 }
-                $stmt->close();
             }
             ?>
         </table>
+
         <br />
         <label style="color:#000000;"></label>
         <br />
@@ -66,16 +64,15 @@ require_once('auth.php');
             </tr>
             <?php
             if (isset($_GET['id'])) {
-                include('connection.php');
                 $id = $_GET['id'];
 
-                // Securely fetch product details again for pricing and quantity form
-                $stmt = $conn->prepare("SELECT * FROM products WHERE product_id = ?");
-                $stmt->bind_param("i", $id);
+                // Use PDO to fetch pricing and quantity information
+                $stmt = $bd->prepare("SELECT * FROM products WHERE product_id = :id");
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
-                $result = $stmt->get_result();
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                while ($row3 = $result->fetch_assoc()) {
+                foreach ($result as $row3) {
                     echo '<tr>';
                     echo '<td>' . htmlspecialchars($row3['price']) . '</td>';
                     echo '<input type="hidden" name="price" value="' . htmlspecialchars($row3['price']) . '">';
@@ -84,7 +81,6 @@ require_once('auth.php');
                     echo '<td><input name="butadd" type="image" value="' . htmlspecialchars($row3['id']) . '" src="images/button.png" /></td>';
                     echo '</tr>';
                 }
-                $stmt->close();
             }
             ?>
         </table>
