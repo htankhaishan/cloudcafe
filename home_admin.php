@@ -2,6 +2,19 @@
 // Start session
 session_start();
 
+// Logout logic
+if (isset($_GET['logout']) && $_GET['logout'] == 'true') {
+    // Unset all session variables
+    session_unset();
+
+    // Destroy the session
+    session_destroy();
+
+    // Redirect to the login page
+    header("Location: admin_index.php");
+    exit();
+}
+
 // Check if session variables are set (i.e., user is logged in)
 if (!isset($_SESSION['email']) || !isset($_SESSION['password'])) {
     // If not logged in, redirect to the login page
@@ -27,7 +40,7 @@ $password = $_SESSION['password'];
     <div id="container">
         <div id="header_section">
           <div style="float:right; width:50px; margin-right:20px; background-color:#cccccc; text-align:center;">
-            <a href="admin_index.php?logout=true">Logout</a>
+            <a href="home_admin.php?logout=true">Logout</a> <!-- Updated Logout Link -->
           </div>
           <p>&nbsp;</p>
         </div>
