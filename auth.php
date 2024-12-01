@@ -19,4 +19,10 @@ if (!isset($_SESSION['SESS_MEMBER_ID']) || trim($_SESSION['SESS_MEMBER_ID']) ===
     header("Location: admin_index.php"); // Redirect to login page
     exit();
 }
+
+// Debugging: Show session values
+echo '<pre>';
+print_r($_SESSION);
+echo '</pre>';
+
 ?>
