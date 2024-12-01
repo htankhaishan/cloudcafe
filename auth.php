@@ -1,13 +1,9 @@
 <?php
-//Start session
 session_start();
-	
-	//Check whether the session variable SESS_MEMBER_ID is present or not
-if(!isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) == '')) {
-?>
-				<script type="text/javascript">
-				window.location = "error.php";
-			</script>
-			<?php
-	}
+
+// Redirect to login page if the user is not logged in
+if (!isset($_SESSION['SESS_MEMBER_ID']) || trim($_SESSION['SESS_MEMBER_ID']) === '') {
+    header("Location: loginindex.php"); // Redirect to the login page
+    exit();
+}
 ?>
