@@ -5,7 +5,6 @@ include("connection.php"); // Ensure $db is defined as the PDO connection
 
 // Check if the email and password are set in the POST request
 if (isset($_POST['email']) && isset($_POST['password'])) {
-    // Fetch input safely using prepared statements
     $email = $_POST['email'];
     $password = $_POST['password'];
 
@@ -24,7 +23,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
             header("location:home_admin.php"); // Redirect to admin page
             exit();
         } else {
-            echo "<h4 style='color:red;'>Please enter your correct login details!!!</h4>";
+            echo "<h4 style='color:red;'>Incorrect email or password. Please try again.</h4>";
         }
     } catch (PDOException $e) {
         die("Error: " . $e->getMessage());
@@ -33,4 +32,3 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     echo "<h4 style='color:red;'>Please fill in both email and password.</h4>";
 }
 ?>
-
