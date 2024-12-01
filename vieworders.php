@@ -72,7 +72,7 @@ require_once('auth.php');
 
             if (isset($_SESSION['SESS_MEMBER_ID'])) {
                 $id = $_SESSION['SESS_MEMBER_ID'];
-                $query = $dbs->prepare("SELECT name, surname FROM members WHERE id = :id");
+                $query = $db->prepare("SELECT name, surname FROM members WHERE id = :id");
                 $query->execute(['id' => $id]);
                 $member = $query->fetch();
 
@@ -102,7 +102,7 @@ require_once('auth.php');
                 <h2>Select From Menu Below</h2>
                 <div class="view1">
                     <?php
-                    $query = $dbs->query("SELECT * FROM products");
+                    $query = $db->query("SELECT * FROM products");
                     while ($product = $query->fetch()) {
                         echo "<div class='box'>
                                 <a rel='facebox' href='portal.php?id=" . htmlspecialchars($product['product_id']) . "'>
@@ -132,7 +132,7 @@ require_once('auth.php');
                         </thead>
                         <tbody>
                             <?php
-                            $query = $dbs->prepare("SELECT * FROM orderditems WHERE transactioncode = :transactioncode");
+                            $query = $db->prepare("SELECT * FROM orderditems WHERE transactioncode = :transactioncode");
                             $query->execute(['transactioncode' => $_SESSION['SESS_FIRST_NAME']]);
                             while ($order = $query->fetch()) {
                                 echo "<tr>
@@ -150,7 +150,7 @@ require_once('auth.php');
                               <td colspan="3">Grand Total:</td>
                               <td colspan="2">
                                   <?php
-                                  $query = $dbs->prepare("SELECT SUM(total) as grandTotal FROM orderditems WHERE transactioncode = :transactioncode");
+                                  $query = $db->prepare("SELECT SUM(total) as grandTotal FROM orderditems WHERE transactioncode = :transactioncode");
                                   $query->execute(['transactioncode' => $_SESSION['SESS_FIRST_NAME']]);
                                   $total = $query->fetchColumn();
 
