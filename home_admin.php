@@ -34,13 +34,4 @@ session_start();
                 </div>
                 <div class="admin-actions">
                     <a href="vieworders.php" class="action-button">
-                        <img src="images/84.png" alt="View Orders" title="View all orders">
-                    </a>
-                    <a href="addproduct.php" class="action-button">
-                        <img src="images/78.png" alt="Add Product" title="Add products">
-                    </a>
-                </div>
-            </div>
-        </main>
-    </div>
-</body>
+                        <img src="images/84

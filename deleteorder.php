@@ -4,8 +4,8 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
     // Use prepared statement to prevent SQL injection
-    $stmt = $bd->prepare("DELETE FROM orderditems WHERE id = ?");
-    $stmt->bind_param("i", $id);
+    $stmt = $bd->prepare("DELETE FROM orderditems WHERE id = :id");
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
 
     // Redirect to order page after deletion
