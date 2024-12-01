@@ -1,13 +1,6 @@
 <?php
-// Debugging: Check if session variable is set
-if (isset($_SESSION['SESS_FIRST_NAME'])) {
-    echo "First Name: " . $_SESSION['SESS_FIRST_NAME']; // This will display the first name
-} else {
-    echo "First Name not set!";
-}
 include("session.php");
 confirm_logged_in();
-var_dump($_SESSION);
 ?>
 
 <!DOCTYPE html>

@@ -1,13 +1,5 @@
 <?php
 session_start(); // Always start the session at the top
-
-// Ensure that the session variable is available
-if (isset($_SESSION['SESS_FIRST_NAME'])) {
-    echo "First Name: " . $_SESSION['SESS_FIRST_NAME']; // This will display the first name
-} else {
-    echo "No first name found in session.";
-}
-var_dump($_SESSION);
 ?>
 
 
