@@ -1,9 +1,9 @@
 <?php
 // Set database credentials
 $host = 'localhost';  // or your database host
-$dbname = 'your_database_name'; // your database name
-$username = 'your_username'; // your username
-$password = 'your_password'; // your password
+$dbname = 'wings'; // your database name
+$username = 'root'; // your username
+$password = '@Bcde12345'; // your password
 
 try {
     // Create PDO instance
